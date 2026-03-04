@@ -27,7 +27,7 @@ Initial Draft of Running Program:
 """
 
 
-def main():
+def question1():
     print("Welcome to the Ontario Pre-Election Inflation and Voting Analysis Program!")
     print("This program investigates the correlation between pre-election inflation in Ontario and the change in votes for a specific party.")
     party = input("Please enter the name of the specific party you want to analyze: ")
@@ -37,7 +37,7 @@ def main():
     print("Displaying results and graphs...")
     print("Interpretation of results and conclusions...")   
 
-main()
+question1()
 
 """
 To do List steps to complete the project:(question 2)
@@ -67,7 +67,7 @@ Initial Draft of Running Program:
 - Provides an interpretation of the results and any conclusions drawn from the analysis.
 """
 
-def main():
+def question2():
     print("Welcome to the Ontario Age Demographic Density and Voter Turnout Analysis Program!")
     print("This program investigates the correlation between the density of a specific age demographic in Ontario and voter turnout.")
     age_demographic = input("Please enter the specific age demographic you want to analyze (e.g., 18-24, 25-34, etc.): ")
@@ -77,4 +77,4 @@ def main():
     print("Displaying results and graphs...")
     print("Interpretation of results and conclusions...")
 
-main()
+question2()
