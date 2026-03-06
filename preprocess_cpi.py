@@ -43,7 +43,7 @@ TARGET_MONTHS = {"2018-10", "2019-10", "2020-09", "2021-09"}
 def main(argv):
 
     if len(argv) != 2:
-        print("Usage: preprocess_cpi_q1.py <cpi_input.csv>", file=sys.stderr)
+        print("Usage: preprocess_cpi_q1.py <datasets/cpi_table.csv>", file=sys.stderr)
         sys.exit(1)
 
     filename = argv[1]

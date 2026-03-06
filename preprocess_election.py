@@ -54,8 +54,8 @@ def extract_party_vote(filename, target_party):
     vote_percentage = None
 
     for row in reader:
-        party = row.get("Political Affiliation")
-        ont_vote = row.get("Ont. Percentage of Valid Votes")
+        party = row.get("Political affiliation/Appartenance politique")
+        ont_vote = row.get("Ont. Percentage of Valid Votes/Pourcentage des votes valides Ont.")
 
         if party == target_party:
             try:
