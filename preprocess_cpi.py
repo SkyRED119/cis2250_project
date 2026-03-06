@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-number_csv_rows.py
+.py
   Author(s): Hieu Hoang (1390265), 
 
   Module: CPI Preprocessor 
@@ -11,6 +11,12 @@ number_csv_rows.py
     Reads CPI CSV and outputs processed_inflation.csv for Q1.
 	Usage:
         python3 preprocess_cpi_q1.py <cpi_input.csv> > processed_inflation.csv
+    Effect:
+        Produces a CSV file containing the computed inflation rates
+        for Ontario prior to the 2019 and 2021 federal elections.
+
+        Output format:
+            Year,Inflation Rate
 '''
 
 
@@ -35,11 +41,19 @@ TARGET_MONTHS = {"2018-10", "2019-10", "2020-09", "2021-09"}
 ## Mainline function
 ##
 def main(argv):
+
     if len(argv) != 2:
         print("Usage: preprocess_cpi_q1.py <cpi_input.csv>", file=sys.stderr)
         sys.exit(1)
-    
-    infile = open(argv[1], newline='', encoding="utf-8-sig")
+
+    filename = argv[1]
+
+    try:
+        infile = open(filename, newline = '', encoding="utf-8-sig")
+    except IOError:
+        print(f"Error: Could not open the selected file {filename}.", file=sys.stderr)
+        sys.exit(1)
+
     reader = csv.DictReader(infile)
     writer = csv.writer(sys.stdout)
     writer.writerow(["year", "inflation_rate"])
@@ -61,13 +75,13 @@ def main(argv):
 
     if "2018-10" in cpi and "2019-10" in cpi:
         infl_2019 = (cpi["2019-10"] - cpi["2018-10"]) / cpi["2018-10"] * 100.0
-        writer.writerow([2019, f"{infl_2019:.4f}"])
+        writer.writerow([2019, f"{infl_2019:.2f}"])
     else:
         print("Missing CPI months for 2019 inflation.", file=sys.stderr)
 
     if "2020-09" in cpi and "2021-09" in cpi:
         infl_2021 = (cpi["2021-09"] - cpi["2020-09"]) / cpi["2020-09"] * 100.0
-        writer.writerow([2021, f"{infl_2021:.4f}"])
+        writer.writerow([2021, f"{infl_2021:.2f}"])
     else:
         print("Missing CPI months for 2021 inflation.", file=sys.stderr)
 
