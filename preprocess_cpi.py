@@ -10,7 +10,7 @@
   Functional Summary
     Reads CPI CSV and outputs processed_inflation.csv for Q1.
 	Usage:
-        python3 preprocess_cpi_q1.py <cpi_input.csv> > processed_inflation.csv
+        python3 preprocess_cpi_q1.py <datasets/cpi_table.csv> > processed_inflation.csv
     Effect:
         Produces a CSV file containing the computed inflation rates
         for Ontario prior to the 2019 and 2021 federal elections.
@@ -56,7 +56,7 @@ def main(argv):
 
     reader = csv.DictReader(infile)
     writer = csv.writer(sys.stdout)
-    writer.writerow(["year", "inflation_rate"])
+    writer.writerow(["Year", "Inflation Rate"])
 
     cpi = {}  # ref_date -> value
     for row in reader:

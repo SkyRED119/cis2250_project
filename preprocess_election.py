@@ -5,7 +5,7 @@ preprocess_election.py
   Author(s): Hieu Hoang (1390265), 
 
   Module: Election Preprocessor 
-  Date of Last Update: Mar 04, 2026.
+  Date of Last Update: Mar 06, 2026.
 
   Functional Summary
     Reads 2019 and 2021 election Table 9 CSV files and outputs processed_votes_percentage.csv for question 1
