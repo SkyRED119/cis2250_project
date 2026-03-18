@@ -10,10 +10,10 @@ preprocess_election.py
   Functional Summary
     Reads 2019 and 2021 election Table 9 CSV files and outputs processed_votes_percentage.csv for question 1
 	Usage:
-        python3 preprocess_election.py <datasets/2019_election.csv> <datasets/2021_election.csv> <party_name> > processed_vote_percentages.csv
+        python3 preprocess_election.py <party_name> <datasets/2004_election.csv> <datasets/2006_election.csv> <datasets/2008_election.csv> <datasets/2011_election.csv> <datasets/2015_election.csv> <datasets/2019_election.csv> <datasets/2021_election.csv> <datasets/2025_election.csv> > processed_vote_percentages.csv
     Effect:
         Produce a CSV file containing the Ontario percentage of valid votes
-        for the specified political party in the 2019 and 2021 elections.
+        for the specified political for elections from 2004 to 2025.
 
         Output format:
             Year,Party,Ontario Vote Percentage
@@ -45,30 +45,64 @@ def extract_party_vote(filename, target_party):
 
     try:
         infile = open(filename, newline = '', encoding="utf-8-sig")
+
+        reader = csv.DictReader(infile)
+
+        vote_percentage = None
+
+        for row in reader:
+            party = row.get("Political affiliation/Appartenance politique")
+            ont_vote = row.get("Ont. Percentage of Valid Votes/Pourcentage des votes valides Ont.")
+
+            if party is not None:
+                party = party.strip()
+
+            if party is not None and target_party in party:
+                try:
+                    vote_percentage = float(ont_vote)
+                except (TypeError, ValueError):
+                    vote_percentage = None
+                    print("Error: Could not assign value for variable: vote_percentage",file=sys.stderr)
+                break #Breaks the loop once selected party found
+
+        infile.close()
+        return vote_percentage
+
+    except UnicodeDecodeError:
+        pass
+
+
+    try:
+        infile = open(filename, newline = '', encoding="cp1252")
+
+        reader = csv.DictReader(infile)
+
+        vote_percentage = None
+
+        for row in reader:
+            party = row.get("Political affiliation/Appartenance politique")
+            ont_vote = row.get("Ont. Percentage of Valid Votes/Pourcentage des votes valides Ont.")
+
+            if party is not None:
+                party = party.strip()
+
+            if party is not None and target_party in party:
+                try:
+                    vote_percentage = float(ont_vote)
+                except (TypeError, ValueError):
+                    vote_percentage = None
+                    print("Error: Could not assign value for variable: vote_percentage",file=sys.stderr)
+                break #Breaks the loop once selected party found
+
+        infile.close()
+        return vote_percentage
+
     except IOError:
-        print(f"Error: Could not open the selected file {filename}.", file=sys.stderr)
+        print(f"Error: Could not open the the selected file {filename}.", file=sys.stderr)
         sys.exit(1)
 
-    reader = csv.DictReader(infile)
-
-    vote_percentage = None
-
-    for row in reader:
-        party = row.get("Political affiliation/Appartenance politique")
-        ont_vote = row.get("Ont. Percentage of Valid Votes/Pourcentage des votes valides Ont.")
-
-        if party == target_party:
-            try:
-                vote_percentage = float(ont_vote)
-            except (TypeError, ValueError):
-                vote_percentage = None
-                print("Error: Could not assign value for variable: vote_percentage",file=sys.stderr)
-            break #Breaks the loop once selected party found
-
+    return None
     
-    infile.close()
-
-    return vote_percentage
 
 
 ##
@@ -76,24 +110,33 @@ def extract_party_vote(filename, target_party):
 ##
 def main(argv):
 
-    if len(argv) != 4:
-        print("Usage: preprocess_election.py <datasets/2019_election.csv> <datasets/2021_election.csv> <party_name>", file=sys.stderr)
+    if len(argv) != 10:
+        print("Usage: preprocess_election.py <party_name> <datasets/2004_election.csv> <datasets/2006_election.csv> <datasets/2008_election.csv> <datasets/2011_election.csv> <datasets/2015_election.csv> <datasets/2019_election.csv> <datasets/2021_election.csv> <datasets/2025_election.csv> > processed_vote_percentages.csv", file=sys.stderr)
         sys.exit(1)
 
-    election_2019 = argv[1]
-    election_2021 = argv[2]
-    target_party = argv[3]
+    target_party = argv[1].strip() 
 
-    vote_2019 = extract_party_vote(election_2019, target_party)
-    vote_2021 = extract_party_vote(election_2021, target_party)
+    election_files = [
+        (2004, argv[2]),
+        (2006, argv[3]),
+        (2008, argv[4]),
+        (2011, argv[5]),
+        (2015, argv[6]),
+        (2019, argv[7]),
+        (2021, argv[8]),
+        (2025, argv[9])
+    ]
 
-    writer = csv.writer(sys.stdout)
+    writer = csv.writer(sys.stdout, lineterminator='\n')
     writer.writerow(["Year", "Party", "Ontario Vote Percentage"])
 
-    if vote_2019 is not None:
-        writer.writerow([2019, target_party, round(vote_2019, 2)])
-        writer.writerow([2021, target_party, round(vote_2021, 2)])
-
+    for year, filename in election_files:
+        vote_percentage = extract_party_vote(filename, target_party)
+        if vote_percentage is not None:
+            writer.writerow([year, target_party, f"{vote_percentage:.2f}"])
+        else:
+            print(f"Error: Could not find {target_party} in {filename},", file=sys.stderr)
+    
 
 ##
 ## Call our main function, passing the system argv as the parameter

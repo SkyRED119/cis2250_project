@@ -8,18 +8,18 @@ analyer_q1.py
   Date of Last Update: Mar 06, 2026.
 
   Functional Summary
-    Reads the processed CPI and election CSV files for Question 1,compares the 2019 and 2021 Ontario inflation rates and vote
-    percentages for the selected party, and reports the computed changes.
+    Reads the processed CPI and election CSV files for Question 1, checks that all required election years from 2004 to 2025
+    are present, then compares Ontario inflation rates and vote percentages for the selected party year by year across consecutive
+    elections. 
+
 	Usage:
         python3 analyzer_q1.py <processed_inflation.csv> <processed_vote_percentages.csv> 
     Effect:
         Produce a report showing:
-            - 2019 inflation rate
-            - 2021 inflation rate 
-            - 2019 Ontario vote percentage
-            - 2021 Ontario vote percentage
-            - Inflation change
-            - Vote percentage change
+            - inflation rate
+            - Ontario vote percentage
+            - inflation change
+            - vote percentage change
 '''
 
 
@@ -120,9 +120,9 @@ def main(argv):
     inflation_data = load_inflation(inflation_file)
     party_name, vote_data = load_votes(vote_file)
 
-    required_year = [2019, 2021]
+    required_years = [2004, 2006, 2008, 2011, 2015, 2019, 2021, 2025]
 
-    for year in required_year:
+    for year in required_years:
         if year not in inflation_data:
             print(f"Error: missing inflation data for {year}", file=sys.stderr)
             sys.exit(1)
@@ -130,54 +130,56 @@ def main(argv):
             print(f"Error: missing vote percentage data for {year}", file=sys.stderr)
             sys.exit(1)
 
-    inflation_2019 = inflation_data[2019]
-    inflation_2021 = inflation_data[2021]
-
-    vote_2019 = vote_data[2019]
-    vote_2021 = vote_data[2021]
-
-    inflation_change = inflation_2021 - inflation_2019
-    vote_change = vote_2021 - vote_2019
-
-    #Print report
-
-    print("Question 1 Analysis Report")
-    print("--------------------------")
+    print("\nQuestion 1 Analysis Report")
+    print("----------------------------")
     print(f"Party: {party_name}")
-    print(f"Ontario inflation rate in 2019: {inflation_2019:.2f}%")
-    print(f"Ontario inflation rate in 2021: {inflation_2021:.2f}%")
-    print(f"Ontario vote percentage in 2019: {vote_2019:.2f}%")
-    print(f"Ontario vote percentage in 2021: {vote_2021:.2f}%")
-    print("Calculating change...")
-    print(f"-- Inflation change (2019 to 2021): {inflation_change:.2f}")
-    print(f"-- Vote percentage change (2019 to 2021): {vote_change:.2f}")
 
-    #Overall Evaluation
+    for i in range(len(required_years) - 1):
+        year1 = required_years[i]
+        year2 = required_years[i+1]
 
-    print("\n\nOverall Evaluation from 2019 to 2021 in Ontario:")
-    if inflation_change > 0:
-        print("-- Inflation increased between the two elections.")
-    elif inflation_change < 0:
-        print("-- Inflation decreased between the two elections.")
-    else:
-        print("-- Inflation did not change between the two elections.")
+        inflation1 = inflation_data[year1]
+        inflation2 = inflation_data[year2]
+        vote1 = vote_data[year1]
+        vote2= vote_data[year2]
+
+        inflation_change = inflation2 - inflation1
+        vote_change = vote2 - vote1
+
+        print(f"\nComparion: {year1} to {year2}")
+        print(f"Ontario inflation rate in {year1}: {inflation1:.2f}%")
+        print(f"Ontario inflation rate in {year2}: {inflation2:.2f}%")
+        print(f"Ontario vote percentage in {year1}: {vote1:.2f}%")
+        print(f"Ontario vote percentage in {year2}: {vote2:.2f}%")
+        print(f"Inflation change: {inflation_change:.2f}%")
+        print(f"Vote percentage change: {vote_change:.2f}%")
+        
+        if (inflation_change > 0):
+            print("-- Inflation increased in this period")
+        elif (inflation_change < 0):
+            print("-- Inflation decreased in this period")
+        else:
+            print("-- Inflation did not change in this period")
+
+        if (vote_change > 0):
+            print(f"-- {party_name} gained vote in this period")
+        elif (vote_change < 0):
+            print(f"-- {party_name} lost vote in this period")
+        else:
+            print(f"-- {party_name} had no vote change in this period")
     
-    if vote_change > 0:
-        print(f"-- {party_name} gained more vote during the period.")
-    elif vote_change < 0:
-        print(f"-- {party_name} gained less vote during the period.")
-    else:
-        print(f"-- {party_name} had no change in vote during the period.")
+    print("\nSummary Table")
+    print("-----------------")
+    print(f"From-To,Inflation Change, Vote Percentage Change for {party_name}")
 
-    #Quick CSV-style summary
+    for i in range(len(required_years) - 1):
+        year1 = required_years[i]
+        year2 = required_years[i+1]
 
-    print("\n\nSummary table")
-    print("--------------------")
-    print("Year,Inflation Rate,Ontario Vote Percentage")
-    print(f"2019,{inflation_2019:.2f},{vote_2019:.2f}")
-    print(f"2021,{inflation_2021:.2f},{vote_2021:.2f}")
-    print(f"Change,{inflation_change:.2f},{vote_change:.2f}")
+        inflation_change = inflation_data[year2] - inflation_data[year1]
+        vote_change = vote_data[year2] - vote_data[year1]
 
+        print(f"{year1}-{year2},{inflation_change:.2f},{vote_change:.2f}")
 
 ##
 ## Call our main function, passing the system argv as the parameter

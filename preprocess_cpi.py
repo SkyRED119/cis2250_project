@@ -35,7 +35,8 @@ import csv
 
 TARGET_GEO = "Ontario"
 TARGET_PRODUCT = "All-items"
-TARGET_MONTHS = {"2018-10", "2019-10", "2020-09", "2021-09"}
+TARGET_MONTHS = {"2003-06","2004-06","2005-01","2006-01","2007-10","2008-10","2010-05","2011-05","2014-10","2015-10",
+                 "2018-10", "2019-10", "2020-09", "2021-09", "2024-08", "2025-08"}
 
 ##
 ## Mainline function
@@ -43,7 +44,7 @@ TARGET_MONTHS = {"2018-10", "2019-10", "2020-09", "2021-09"}
 def main(argv):
 
     if len(argv) != 2:
-        print("Usage: preprocess_cpi_q1.py <datasets/cpi_table.csv>", file=sys.stderr)
+        print("Usage: preprocess_cpi_q1.py <datasets/cpi_table.csv> > processed_inflation.csv", file=sys.stderr)
         sys.exit(1)
 
     filename = argv[1]
@@ -55,7 +56,7 @@ def main(argv):
         sys.exit(1)
 
     reader = csv.DictReader(infile)
-    writer = csv.writer(sys.stdout)
+    writer = csv.writer(sys.stdout, lineterminator='\n')
     writer.writerow(["Year", "Inflation Rate"])
 
     cpi = {}  # ref_date -> value
@@ -73,6 +74,36 @@ def main(argv):
         except (KeyError, ValueError):
             continue
 
+    if "2003-06" in cpi and "2004-06" in cpi:
+        infl_2004 = (cpi["2004-06"] - cpi["2003-06"]) / cpi["2003-06"] * 100.0
+        writer.writerow([2004, f"{infl_2004:.2f}"])
+    else:
+        print("Missing CPI months for 2004 inflation.", file=sys.stderr)
+
+    if "2005-01" in cpi and "2006-01" in cpi:
+        infl_2006 = (cpi["2006-01"] - cpi["2005-01"]) / cpi["2005-01"] * 100.0
+        writer.writerow([2006, f"{infl_2006:.2f}"])
+    else:
+        print("Missing CPI months for 2006 inflation.", file=sys.stderr)
+    
+    if "2007-10" in cpi and "2008-10" in cpi:
+        infl_2008 = (cpi["2008-10"] - cpi["2007-10"]) / cpi["2007-10"] * 100.0
+        writer.writerow([2008, f"{infl_2008:.2f}"])
+    else:
+        print("Missing CPI months for 2008 inflation.", file=sys.stderr)
+
+    if "2010-05" in cpi and "2011-05" in cpi:
+        infl_2011 = (cpi["2011-05"] - cpi["2010-05"]) / cpi["2010-05"] * 100.0
+        writer.writerow([2011, f"{infl_2011:.2f}"])
+    else:
+        print("Missing CPI months for 2011 inflation.", file=sys.stderr)
+    
+    if "2014-10" in cpi and "2015-10" in cpi:
+        infl_2015 = (cpi["2015-10"] - cpi["2014-10"]) / cpi["2014-10"] * 100.0
+        writer.writerow([2015, f"{infl_2015:.2f}"])
+    else:
+        print("Missing CPI months for 2015 inflation.", file=sys.stderr)
+
     if "2018-10" in cpi and "2019-10" in cpi:
         infl_2019 = (cpi["2019-10"] - cpi["2018-10"]) / cpi["2018-10"] * 100.0
         writer.writerow([2019, f"{infl_2019:.2f}"])
@@ -84,6 +115,12 @@ def main(argv):
         writer.writerow([2021, f"{infl_2021:.2f}"])
     else:
         print("Missing CPI months for 2021 inflation.", file=sys.stderr)
+
+    if "2024-08" in cpi and "2025-08" in cpi:
+        infl_2025 = (cpi["2025-08"] - cpi["2024-08"]) / cpi["2024-08"] * 100.0
+        writer.writerow([2025, f"{infl_2025:.2f}"])
+    else:
+        print("Missing CPI months for 2025 inflation.", file=sys.stderr)
 
     infile.close()
 
