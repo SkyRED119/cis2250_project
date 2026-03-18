@@ -1,4 +1,6 @@
 """
+Author: [Andrea Bujold]
+ID: [1391778]
 To do List steps to complete the project:(question 1)
 
 Question to answer: How does pre-election inflation in Ontario correlate
