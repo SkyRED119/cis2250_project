@@ -170,7 +170,7 @@ def main(argv):
     
     print("\nSummary Table")
     print("-----------------")
-    print("From-To,Inflation Change, Vote Percentage change")
+    print(f"From-To,Inflation Change, Vote Percentage Change for {party_name}")
 
     for i in range(len(required_years) - 1):
         year1 = required_years[i]
