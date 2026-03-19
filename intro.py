@@ -16,7 +16,7 @@ def intro():
     choice = input("Please enter the number corresponding to the question you want answered (1 or 2): ")
     if choice == "1":
         party = input("Question 1 requires a parameter for the party whose vote percentages are meant to be analyzed.\nPlease selection your desire party: ")
-        with open("processed_vote_percentages.csv", "w") as f:
+        with open("processed_vote_percentages.csv", "w", newline="", encoding="utf-8-sig") as f:
             subprocess.run([sys.executable, "preprocess_election.py", f'{party}', "datasets/2004_election.csv", "datasets/2006_election.csv", "datasets/2008_election.csv", "datasets/2011_election.csv", "datasets/2015_election.csv", "datasets/2019_election.csv", "datasets/2021_election.csv", "datasets/2025_election.csv"], stdout=f, check=True)
         subprocess.run([sys.executable, "analyzer_q1.py", "processed_inflation.csv", "processed_vote_percentages.csv"], check=True)
     elif choice == "2":

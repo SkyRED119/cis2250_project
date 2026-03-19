@@ -34,6 +34,8 @@ import sys
 # the fields on each line in turn
 import csv
 
+#Reconfigure the file intro UTF-8 since windows stdout often becomes cp1252
+sys.stdout.reconfigure(encoding="utf-8")
 
 ##
 ## Helper function
