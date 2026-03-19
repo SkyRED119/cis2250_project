@@ -36,6 +36,11 @@ import sys
 # the fields on each line in turn
 import csv
 
+# The 'matplotlib.pyplot' module allows us to creates visualizations
+# such as bar charts and graphs for data analysis
+
+import matplotlib.pyplot as pyplot
+
 
 ##
 ## Read infaltion data
@@ -104,6 +109,44 @@ def load_votes(filename):
 
     return party_name, vote_data
 
+##
+## Visualize datas
+## This function creates a grouped bar chart comparing inlfation change and vote change
+## Parameter: periods (a list of different periods, e.g. ["2004-2006",..] ), inflation_change, vote_change, party_name
+
+def visualization(periods, inflation_changes, vote_changes, party_name):
+    
+    #Create posistions for bars on the x axis
+    x_positions = list(range(len(periods)))
+    
+    #Plot inflation change bars
+    inflation_positions = [i for i in x_positions]
+    vote_positions = [i+0.5 for i in x_positions]
+
+    #Create the bar chart
+    pyplot.figure(figsize=(15,8))   
+    pyplot.bar(inflation_positions, inflation_changes, width=0.5, label="Inflation Changes")
+    pyplot.bar(vote_positions, vote_changes, width=0.5, label="Vote Changes")
+
+    #Draw a horizontal line at y = 0 to seperate the positive changes and negative changes
+    pyplot.axhline(0, linewidth=1)
+
+    #Label the axes and title
+    pyplot.xlabel("Election Period")
+    pyplot.ylabel("Percentage Change")
+    pyplot.title(f"Ontario Inflation Change vs Vote Percentage Change for {party_name}")
+
+    #Put the election periods labels at the center at the end of each bar pair
+    pyplot.xticks(x_positions, periods, rotation=45)
+
+    #Add a legend and adjust spacing
+    pyplot.legend()
+    pyplot.tight_layout()
+    pyplot.savefig("q1_visualiztion.png")
+
+    #Show the visualization
+    pyplot.show()
+    
 
 ##
 ## Mainline function
@@ -134,6 +177,12 @@ def main(argv):
     print("----------------------------")
     print(f"Party: {party_name}")
 
+    # Create lists for visualization 
+
+    periods = []
+    inflation_changes = []
+    vote_changes = []
+
     for i in range(len(required_years) - 1):
         year1 = required_years[i]
         year2 = required_years[i+1]
@@ -145,6 +194,11 @@ def main(argv):
 
         inflation_change = inflation2 - inflation1
         vote_change = vote2 - vote1
+
+        #Save datas inside created lists for plotting visualization
+        periods.append(f"{year1}-{year2}")
+        inflation_changes.append(inflation_change)
+        vote_changes.append(vote_change)
 
         print(f"\nComparison: {year1} to {year2}")
         print(f"Ontario inflation rate in {year1}: {inflation1:.2f}%")
@@ -180,6 +234,8 @@ def main(argv):
         vote_change = vote_data[year2] - vote_data[year1]
 
         print(f"{year1}-{year2},{inflation_change:.2f},{vote_change:.2f}")
+
+    visualization(periods, inflation_changes, vote_changes, party_name)
 
 ##
 ## Call our main function, passing the system argv as the parameter
