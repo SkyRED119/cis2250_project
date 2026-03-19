@@ -146,7 +146,7 @@ def main(argv):
         inflation_change = inflation2 - inflation1
         vote_change = vote2 - vote1
 
-        print(f"\nComparion: {year1} to {year2}")
+        print(f"\nComparison: {year1} to {year2}")
         print(f"Ontario inflation rate in {year1}: {inflation1:.2f}%")
         print(f"Ontario inflation rate in {year2}: {inflation2:.2f}%")
         print(f"Ontario vote percentage in {year1}: {vote1:.2f}%")
