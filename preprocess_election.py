@@ -2,7 +2,7 @@
 
 '''
 preprocess_election.py
-  Author(s): Hieu Hoang (1390265), 
+  Author(s): Hieu Hoang (1390265), Amir Kayumov (1386890)
 
   Module: Election Preprocessor 
   Date of Last Update: Mar 06, 2026.
@@ -41,7 +41,7 @@ import csv
 
 def extract_party_vote(filename, target_party):
     # We need this function because we need to extract each csv file and return the Ontario
-    # percentage of valid votes for the selected party
+    # percentage of valid votes for the selected party as well as the name of the party
 
     try:
         infile = open(filename, newline = '', encoding="utf-8-sig")
@@ -66,7 +66,7 @@ def extract_party_vote(filename, target_party):
                 break #Breaks the loop once selected party found
 
         infile.close()
-        return vote_percentage
+        return vote_percentage, party
 
     except UnicodeDecodeError:
         pass
@@ -95,13 +95,13 @@ def extract_party_vote(filename, target_party):
                 break #Breaks the loop once selected party found
 
         infile.close()
-        return vote_percentage
+        return vote_percentage, party
 
     except IOError:
         print(f"Error: Could not open the the selected file {filename}.", file=sys.stderr)
         sys.exit(1)
 
-    return None
+    return None, None
     
 
 
@@ -131,9 +131,11 @@ def main(argv):
     writer.writerow(["Year", "Party", "Ontario Vote Percentage"])
 
     for year, filename in election_files:
-        vote_percentage = extract_party_vote(filename, target_party)
+        party_vote_data  = extract_party_vote(filename, target_party)
+        vote_percentage = party_vote_data[0]
+        party_name = party_vote_data[1]
         if vote_percentage is not None:
-            writer.writerow([year, target_party, f"{vote_percentage:.2f}"])
+            writer.writerow([year, party_name, f"{vote_percentage:.2f}"])
         else:
             print(f"Error: Could not find {target_party} in {filename},", file=sys.stderr)
     

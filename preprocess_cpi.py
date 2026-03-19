@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 '''
-.py
-  Author(s): Hieu Hoang (1390265), 
+preprocess_cpi.py
+  Author(s): Hieu Hoang (1390265), Amir Kayumov (1386890)
 
   Module: CPI Preprocessor 
-  Date of Last Update: Mar 04, 2026.
+  Date of Last Update: Mar 19, 2026.
 
   Functional Summary
     Reads CPI CSV and outputs processed_inflation.csv for Q1.
 	Usage:
-        python3 preprocess_cpi_q1.py <datasets/cpi_table.csv> > processed_inflation.csv
+        python3 preprocess_cpi.py <datasets/cpi_table.csv> > processed_inflation.csv
     Effect:
         Produces a CSV file containing the computed inflation rates
         for Ontario prior to the 2019 and 2021 federal elections.
@@ -44,7 +44,7 @@ TARGET_MONTHS = {"2003-06","2004-06","2005-01","2006-01","2007-10","2008-10","20
 def main(argv):
 
     if len(argv) != 2:
-        print("Usage: preprocess_cpi_q1.py <datasets/cpi_table.csv> > processed_inflation.csv", file=sys.stderr)
+        print("Usage: preprocess_cpi.py <datasets/cpi_table.csv> > processed_inflation.csv", file=sys.stderr)
         sys.exit(1)
 
     filename = argv[1]

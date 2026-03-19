@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-analyer_q1.py
+analyer_q2.py
   Author(s): Amir Kayumov (1386890)
 
   Module: Question 2 Analyzer
@@ -28,8 +28,8 @@ def load_ages(filename):
     reader = csv.DictReader(infile)
 
     for row in reader:
-        year = row.get("YEAR")
-        age_group = row.get("AGE_GROUP_E")
+        year = row.get("Year")
+        age_group = row.get("Age group")
 
         ages = re.findall(r"\d+", age_group)
 
