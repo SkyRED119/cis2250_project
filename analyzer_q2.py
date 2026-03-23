@@ -9,14 +9,41 @@ analyer_q2.py
   Date of Last Update: Mar 23, 2026.
 
   Functional Summary
-    
+
+  Reads the processed age turnout and election CSV files for Question 2, ensures all required election 
+    years from 2004 to 2025 are present, and compares Ontario voter turnout for a specific age group 
+    against vote percentages for a selected party across consecutive elections.
+
+    Usage:
+        python3 analyzer_q2.py <processed_age_turnout.csv> <processed_vote_percentages.csv> 
+    Effect:
+        Produce a report showing:
+            - Age group turnout percentage
+            - Ontario vote percentage
+            - Turnout change
+            - Vote percentage change
+            - Statistical correlation (Pearson r)
+            - A PNG visualization of the changes
 '''
 
+# The 'sys' module gives us access to system tools, including command line parameters
 import sys
+
+# The 'csv' module allows us to parse and read Comma Separated Value files
 import csv
+
+# The 'matplotlib.pyplot' module allows us to create visualizations for data analysis
 import matplotlib.pyplot as pyplot
+
+# The 'scipy.stats' module provides tools for statistical analysis, specifically correlation
 from scipy import stats
 
+
+##
+## Read age turnout data
+## This function reads processed_age.csv and returns the age group label 
+## and a dictionary called: age_data[year] = turnout_percentage
+##
 def load_ages(filename):
 
     age_data = {}
@@ -119,6 +146,10 @@ def visualization(periods, turnout_changes, vote_changes, party_name, age_group)
     pyplot.show()
 
 
+##
+## Statistical Analysis
+## Calculates and prints the Pearson Correlation between two data lists
+##
 def run_statistical_analysis(turnout_list, vote_list, party_name):
     print("\nStatistical Correlation Analysis")
     print("--------------------------------")
@@ -144,20 +175,27 @@ def run_statistical_analysis(turnout_list, vote_list, party_name):
     elif abs(r) < 0.3:
         print("Strength: Weak or No Correlation")
 
+##
+## Mainline function
+##
 def main(argv):
 
+    # Verify command line arguments
     if (len(argv) != 3):
         print("Usage: analyzer_q2.py <processed_age_turnout.csv> <processed_vote_percentages.csv>", file=sys.stderr)
         sys.exit(1)
-
+   
     age_turnout_file = argv[1]
     votes_file = argv[2]
 
+    # Load data from the processed CSV files 
     age_group, age_turnout_data = load_ages(age_turnout_file)
     party_name, vote_data = load_votes(votes_file)
 
+    # Years required for a complete longitudinal analysis
     required_years = [2004, 2006, 2008, 2011, 2015, 2019, 2021, 2025]
 
+    # Validate that all required years are present in both datasets
     for year in required_years:
         if year not in age_turnout_data:
             print(f"Error: missing age turnout data for {year}", file=sys.stderr)
@@ -169,13 +207,14 @@ def main(argv):
     print("\nQuestion 2 Analysis Report")
     print("----------------------------")
     print(f"Party: {party_name}")
+    print(f"Age Group: {age_group}")
 
-    # Create lists for visualization 
-
+    # Initialize lists to store period-over-period changes for visualization
     periods = []
     turnout_changes = []
     vote_changes = []
 
+    # Calculate differences between consecutive elections
     for i in range(len(required_years) - 1):
         year1 = required_years[i]
         year2 = required_years[i+1]
@@ -193,6 +232,7 @@ def main(argv):
         turnout_changes.append(turnout_change)
         vote_changes.append(vote_change)
 
+        # Output detailed year-over-year comparison to the console
         print(f"\nComparison: {year1} to {year2}")
         print(f"Ontario turnout percentage for {age_group} years olds in {year1}: {turnout1:.2f}%")
         print(f"Ontario turnout percentage for {age_group} years olds in {year2}: {turnout2:.2f}%")
@@ -215,6 +255,7 @@ def main(argv):
         else:
             print(f"-- {party_name} had no vote change in this period")
     
+    # Print a comma-separated summary table for easy export/viewing
     print("\nSummary Table")
     print("-----------------")
     print(f"From-To,Turnout Percentage Change for {age_group} years olds, Vote Percentage Change for {party_name}")
@@ -228,8 +269,10 @@ def main(argv):
 
         print(f"{year1}-{year2},{turnout_change:.2f},{vote_change:.2f}")
 
+    # Run and display correlation analysis
     run_statistical_analysis(turnout_changes, vote_changes, party_name)
 
+    # Generate and display the grouped bar chart
     visualization(periods, turnout_changes, vote_changes, party_name, age_group)
 
 
@@ -237,3 +280,8 @@ def main(argv):
 ## Call our main function, passing the system argv as the parameter
 ##
 if __name__ == "__main__": main(sys.argv)
+
+
+#
+#   End of Script
+#
