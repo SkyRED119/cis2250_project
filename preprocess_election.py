@@ -38,8 +38,31 @@ import csv
 sys.stdout.reconfigure(encoding="utf-8")
 
 ##
-## Helper function
+## Helper functions
 ##
+
+
+## Function: extract_party_vote
+## Purpose:
+##   Reads a single election CSV file and extracts the Ontario
+##   vote percentage for the specified political party.
+##
+## Parameters:
+##   filename (str): Path to the election CSV file
+##   target_party (str): Name (or substring) of the party to search for
+##
+## Returns:
+##   tuple:
+##       (vote_percentage (float or None), party_name (str or None))
+##
+## Description:
+##   - Searches each row for the specified party
+##   - Extracts the Ontario percentage of valid votes
+##   - Handles encoding issues by attempting UTF-8 and cp1252
+##
+## Errors:
+##   - Prints error if vote percentage cannot be parsed
+##   - Exits program if file cannot be opened
 
 def extract_party_vote(filename, target_party):
     # We need this function because we need to extract each csv file and return the Ontario
@@ -108,8 +131,32 @@ def extract_party_vote(filename, target_party):
 
 
 ##
-## Mainline function
+## Function: main
+## Purpose:
+##   Controls the election preprocessing workflow. Reads multiple
+##   election datasets, extracts Ontario vote percentages for a
+##   specified party, and outputs the results in CSV format.
 ##
+## Parameters:
+##   argv (list): Command-line arguments where:
+##       argv[1] = party name
+##       argv[2-9] = election dataset file paths (2004–2025)
+##
+## Returns:
+##   None
+##
+## Output:
+##   Writes processed vote data to stdout in the format:
+##       Year,Party,Ontario Vote Percentage
+##
+## Description:
+##   - Iterates through all election files
+##   - Calls extract_party_vote() for each year
+##   - Outputs results in chronological order
+##
+## Errors:
+##   - Exits if incorrect number of arguments is provided
+##   - Prints error if party is not found in a dataset
 def main(argv):
 
     if len(argv) != 10:

@@ -39,8 +39,28 @@ TARGET_MONTHS = {"2003-06","2004-06","2005-01","2006-01","2007-10","2008-10","20
                  "2018-10", "2019-10", "2020-09", "2021-09", "2024-08", "2025-08"}
 
 ##
-## Mainline function
+## Function: main
+## Purpose:
+##   Controls the overall CPI preprocessing workflow. Reads the
+##   CPI dataset, filters relevant Ontario data, computes
+##   pre-election inflation rates for multiple election years,
+##   and outputs the results in CSV format.
 ##
+## Parameters:
+##   argv (list): Command-line arguments where:
+##       argv[1] = input CPI dataset file path
+##
+## Returns:
+##   None
+##
+## Output:
+##   Writes processed inflation data to stdout in the format:
+##       Year, Inflation Rate
+##
+## Errors:
+##   - Exits if incorrect number of arguments is provided
+##   - Exits if input file cannot be opened
+##   - Prints warnings if required CPI months are missing
 def main(argv):
 
     if len(argv) != 2:
