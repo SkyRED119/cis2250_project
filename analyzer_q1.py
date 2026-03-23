@@ -2,7 +2,7 @@
 
 '''
 analyer_q1.py
-  Author(s): Hieu Hoang (1390265), 
+  Author(s): Hieu Hoang (1390265) 
 
   Module: Question 1 Analyzer
   Date of Last Update: Mar 06, 2026.

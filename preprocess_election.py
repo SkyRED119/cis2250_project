@@ -187,6 +187,7 @@ def main(argv):
             writer.writerow([year, party_name, f"{vote_percentage:.2f}"])
         else:
             print(f"Error: Could not find {target_party} in {filename},", file=sys.stderr)
+            sys.exit(1)
     
 
 ##

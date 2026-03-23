@@ -39,7 +39,7 @@ def main(argv):
     reader = csv.DictReader(infile)
     writer = csv.writer(sys.stdout, lineterminator='\n')
 
-    writer.writerow(["Year", "Turnout"])
+    writer.writerow(["Year", "Turnout", "Age Group"])
 
     for row in reader:
         age_group = re.findall(r'\d+', row.get("AGE_GROUP_E"))
@@ -50,10 +50,10 @@ def main(argv):
             except ValueError:
                 continue
 
-            if (target_age_group > age_floor and target_age_group < age_ceiling and row.get("PROVINCE_E") == "Ontario"):
+            if (target_age_group >= age_floor and target_age_group <= age_ceiling and row.get("PROVINCE_E") == "Ontario"):
                 year = row.get("YEAR")
                 turnout = float(row.get("TURNOUT_ELIGIBLE_ELECTOR"))
-                writer.writerow([year, f'{turnout:.4f}'])
+                writer.writerow([year, f'{turnout:.4f}', f'{age_floor} to {age_ceiling}'])
     
     infile.close()
             

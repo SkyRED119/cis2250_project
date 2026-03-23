@@ -9,7 +9,7 @@ the program will then call the appropriate function to answer the question.
 import subprocess
 import sys
 
-def intro():
+def demo():
     print("\nWelcome to the Ontario Election and Inflation Analysis Program!")
     print("This program analyzes the relationship between Ontario's inflation rates OR age demographics and vote percentages.\n")
     while True:
@@ -24,26 +24,44 @@ def intro():
             print("Exiting program. Goodbye!")
             break
 
-        elif choice == "1":
-            while True:
-                party = input("\nEnter the party name (or type 'back' to return): ").strip()
-                
-                if party.lower() == "back":
-                    break
+        while True:
+            party = input("\nEnter the party name (or type 'back' to return): ").strip()
+            
+            if party.lower() == "back":
+                choice = 0
+                break
 
-                if party == "":
-                    print("Invalid input. Please enter a valid party name.")
-                    continue
+            if party == "":
+                print("Invalid input. Please enter a valid party name.")
+                continue
 
-                try:
-                    with open("processed_vote_percentages.csv", "w", newline="", encoding="utf-8-sig") as f:
-                        subprocess.run([sys.executable, "preprocess_election.py", party, "datasets/2004_election.csv",
-                            "datasets/2006_election.csv", "datasets/2008_election.csv", "datasets/2011_election.csv",
-                            "datasets/2015_election.csv", "datasets/2019_election.csv", "datasets/2021_election.csv",
-                            "datasets/2025_election.csv"], stdout=f, check=True)
-
+            try:
+                with open("processed_vote_percentages.csv", "w", newline="", encoding="utf-8-sig") as f:
                     subprocess.run([
-                        sys.executable, "analyzer_q1.py",
+                        sys.executable, 
+                        "preprocess_election.py", 
+                        party, 
+                        "datasets/2004_election.csv",
+                        "datasets/2006_election.csv", 
+                        "datasets/2008_election.csv",
+                        "datasets/2011_election.csv",
+                        "datasets/2015_election.csv", 
+                        "datasets/2019_election.csv", 
+                        "datasets/2021_election.csv",
+                        "datasets/2025_election.csv"
+                    ], stdout=f, check=True)
+
+                break  # success - carry onto answering either question 1 or 2
+
+            except subprocess.CalledProcessError:
+                print("Error occurred while running analysis. Please try again.")
+
+        if choice == "1":
+            while True:
+                try:
+                    subprocess.run([
+                        sys.executable, 
+                        "analyzer_q1.py",
                         "processed_inflation.csv",
                         "processed_vote_percentages.csv"
                     ], check=True)
@@ -54,13 +72,42 @@ def intro():
                     print("Error occurred while running analysis. Please try again.")
 
         elif choice == "2":
-            try:
-                subprocess.run([sys.executable, "analyzer_q2.py", "processed_age_turnout.csv", "processed_vote_percentages.csv"], check=True)
-            except subprocess.CalledProcessError:
-                print("Error occurred while running analysis.")
+
+            while True:
+                age = input("\nEnter the target age [age group determined automatically] (or type 'back' to return): ").strip()
+                
+                if age.lower() == "back":
+                    choice = 0
+                    break
+
+                if age == "":
+                    print("Invalid input. Please enter a valid age.")
+                    continue
+
+                try:
+                    with open("processed_age_turnout.csv", "w", newline="", encoding="utf-8-sig") as f:
+                        subprocess.run([
+                            sys.executable, 
+                            "preprocess_age.py", 
+                            age, 
+                            "datasets/age_turnout_table.csv"
+                        ], stdout=f, check=True)
+                        
+                    subprocess.run([
+                        sys.executable, 
+                        "analyzer_q2.py", 
+                        "processed_age_turnout.csv", 
+                        "processed_vote_percentages.csv"
+                    ], check=True)
+
+                    break  # success - go back to main menu
+
+                except subprocess.CalledProcessError:
+                    print("Error occurred while running analysis. Please try again.")
         else:
-            print("Invalid choice. Please enter 0, 1, or 2.")
+            if choice != 0:
+                print("Invalid choice. Please enter 0, 1, or 2.")
 
 if __name__ == "__main__": 
-    intro()
+    demo()
         
