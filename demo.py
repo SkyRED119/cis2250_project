@@ -10,10 +10,10 @@ import subprocess
 import sys
 
 def intro():
+    print("\nWelcome to the Ontario Election and Inflation Analysis Program!")
+    print("This program analyzes the relationship between Ontario's inflation rates OR age demographics and vote percentages.\n")
     while True:
-        print("\nWelcome to the Ontario Election and Inflation Analysis Program!")
-        print("______________________________________________________________________________________")
-        print("This program analyzes the relationship between Ontario's inflation rates OR age demographics and vote percentages.\n")
+        print("______________________________________________________________________________________\n")
         print("Your choices for analysis are:")
         print(" 1. Inflation vs Vote Percentage")
         print(" 2. Age Demographics vs Voter Turnout")

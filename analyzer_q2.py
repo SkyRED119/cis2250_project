@@ -13,7 +13,6 @@ analyer_q2.py
 
 import sys
 import csv
-import re
 
 def load_ages(filename):
 
@@ -29,15 +28,9 @@ def load_ages(filename):
 
     for row in reader:
         year = row.get("Year")
-        age_group = row.get("Age group")
+        age_group = row.get("Turnout")
 
-        ages = re.findall(r"\d+", age_group)
-
-        try:
-            for age in range(ages[0], ages[1]+1):
-                age_data[int(year)] = int(age)
-        except (TypeError, ValueError):
-            continue
+        
     
     infile.close()
 
