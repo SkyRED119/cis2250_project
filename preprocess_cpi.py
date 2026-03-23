@@ -13,7 +13,7 @@ preprocess_cpi.py
         python3 preprocess_cpi.py <datasets/cpi_table.csv> > processed_inflation.csv
     Effect:
         Produces a CSV file containing the computed inflation rates
-        for Ontario prior to the 2019 and 2021 federal elections.
+        for Ontario prior from 2004 and 2025 federal elections.
 
         Output format:
             Year,Inflation Rate
