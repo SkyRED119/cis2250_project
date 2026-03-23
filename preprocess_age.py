@@ -52,7 +52,7 @@ def main(argv):
 
             if (target_age_group >= age_floor and target_age_group <= age_ceiling and row.get("PROVINCE_E") == "Ontario"):
                 year = row.get("YEAR")
-                turnout = float(row.get("TURNOUT_ELIGIBLE_ELECTOR"))
+                turnout = float(row.get("TURNOUT_ELIGIBLE_ELECTOR")) * 100
                 writer.writerow([year, f'{turnout:.4f}', f'{age_floor} to {age_ceiling}'])
     
     infile.close()

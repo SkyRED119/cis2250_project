@@ -2,10 +2,10 @@
 
 '''
 analyer_q1.py
-  Author(s): Hieu Hoang (1390265) 
+  Author(s): Hieu Hoang (1390265), Amir Kayumov (1386890)
 
   Module: Question 1 Analyzer
-  Date of Last Update: Mar 06, 2026.
+  Date of Last Update: Mar 23, 2026.
 
   Functional Summary
     Reads the processed CPI and election CSV files for Question 1, checks that all required election years from 2004 to 2025
@@ -40,6 +40,8 @@ import csv
 # such as bar charts and graphs for data analysis
 
 import matplotlib.pyplot as pyplot
+
+from scipy import stats
 
 
 ##
@@ -148,6 +150,31 @@ def visualization(periods, inflation_changes, vote_changes, party_name):
     pyplot.show()
     
 
+def run_statistical_analysis(inflation_list, vote_list, party_name):
+    print("\nStatistical Correlation Analysis")
+    print("--------------------------------")
+    
+    # Calculate Pearson Correlation
+    # r = correlation coefficient, p = probability it's due to chance
+    r, p = stats.pearsonr(inflation_list, vote_list)
+    
+    print(f"Analysis for {party_name}:")
+    print(f"Pearson Correlation Coefficient (r): {r:.4f}")
+    print(f"P-value: {p:.4f}")
+    
+    # Interpretation
+    if p < 0.05:
+        print("Result: Statistically Significant (p < 0.05)")
+    else:
+        print("Result: Not Statistically Significant (p > 0.05)")
+        
+    if r > 0.7:
+        print("Strength: Strong Positive Correlation")
+    elif r < -0.7:
+        print("Strength: Strong Negative Correlation")
+    elif abs(r) < 0.3:
+        print("Strength: Weak or No Correlation")
+
 ##
 ## Mainline function
 ##
@@ -234,6 +261,8 @@ def main(argv):
         vote_change = vote_data[year2] - vote_data[year1]
 
         print(f"{year1}-{year2},{inflation_change:.2f},{vote_change:.2f}")
+
+    run_statistical_analysis(inflation_changes, vote_changes, party_name)
 
     visualization(periods, inflation_changes, vote_changes, party_name)
 

@@ -14,6 +14,8 @@ analyer_q2.py
 
 import sys
 import csv
+import matplotlib.pyplot as pyplot
+from scipy import stats
 
 def load_ages(filename):
 
@@ -78,6 +80,70 @@ def load_votes(filename):
 
     return party_name, vote_data
 
+##
+## Visualize datas
+## This function creates a grouped bar chart comparing inlfation change and vote change
+## Parameter: periods (a list of different periods, e.g. ["2004-2006",..] ), turnout_changes, vote_change, party_name
+
+def visualization(periods, turnout_changes, vote_changes, party_name, age_group):
+    
+    #Create posistions for bars on the x axis
+    x_positions = list(range(len(periods)))
+    
+    #Plot inflation change bars
+    inflation_positions = [i for i in x_positions]
+    vote_positions = [i+0.5 for i in x_positions]
+
+    #Create the bar chart
+    pyplot.figure(figsize=(15,8))   
+    pyplot.bar(inflation_positions, turnout_changes, width=0.5, label="Turnout Changes")
+    pyplot.bar(vote_positions, vote_changes, width=0.5, label="Vote Changes")
+
+    #Draw a horizontal line at y = 0 to seperate the positive changes and negative changes
+    pyplot.axhline(0, linewidth=1)
+
+    #Label the axes and title
+    pyplot.xlabel("Election Period")
+    pyplot.ylabel("Percentage Change")
+    pyplot.title(f"Ontario Turnout Percentage Change for {age_group} Year Olds vs Vote Percentage Change for {party_name}")
+
+    #Put the election periods labels at the center at the end of each bar pair
+    pyplot.xticks(x_positions, periods, rotation=45)
+
+    #Add a legend and adjust spacing
+    pyplot.legend()
+    pyplot.tight_layout()
+    pyplot.savefig("q2_visualization.png")
+
+    #Show the visualization
+    pyplot.show()
+
+
+def run_statistical_analysis(turnout_list, vote_list, party_name):
+    print("\nStatistical Correlation Analysis")
+    print("--------------------------------")
+    
+    # Calculate Pearson Correlation
+    # r = correlation coefficient, p = probability it's due to chance
+    r, p = stats.pearsonr(turnout_list, vote_list)
+    
+    print(f"Analysis for {party_name}:")
+    print(f"Pearson Correlation Coefficient (r): {r:.4f}")
+    print(f"P-value: {p:.4f}")
+    
+    # Interpretation
+    if p < 0.05:
+        print("Result: Statistically Significant (p < 0.05)")
+    else:
+        print("Result: Not Statistically Significant (p > 0.05)")
+        
+    if r > 0.7:
+        print("Strength: Strong Positive Correlation")
+    elif r < -0.7:
+        print("Strength: Strong Negative Correlation")
+    elif abs(r) < 0.3:
+        print("Strength: Weak or No Correlation")
+
 def main(argv):
 
     if (len(argv) != 3):
@@ -94,7 +160,7 @@ def main(argv):
 
     for year in required_years:
         if year not in age_turnout_data:
-            print(f"Error: missing inflation data for {year}", file=sys.stderr)
+            print(f"Error: missing age turnout data for {year}", file=sys.stderr)
             sys.exit(1)
         if year not in vote_data:
             print(f"Error: missing vote percentage data for {year}", file=sys.stderr)
@@ -162,6 +228,9 @@ def main(argv):
 
         print(f"{year1}-{year2},{turnout_change:.2f},{vote_change:.2f}")
 
+    run_statistical_analysis(turnout_changes, vote_changes, party_name)
+
+    visualization(periods, turnout_changes, vote_changes, party_name, age_group)
 
 
 ##
